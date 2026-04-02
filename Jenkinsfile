@@ -4,34 +4,58 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo '📦 Checking out code from GitHub...'
+                echo '========================================='
+                echo '📦 STAGE 1: CHECKOUT'
+                echo '========================================='
                 checkout scm
-                echo "Branch: ${env.BRANCH_NAME}"
-                echo "Commit: ${env.GIT_COMMIT}"
+                echo "✅ Code checked out successfully"
+                echo "📌 Branch: ${env.BRANCH_NAME}"
+                echo "📌 Commit: ${env.GIT_COMMIT}"
+                echo "📌 Repository: ${env.GIT_URL}"
             }
         }
         
         stage('Build') {
             steps {
-                echo '🔨 Building with Maven...'
-                sh 'mvn clean compile'
+                echo '========================================='
+                echo '🔨 STAGE 2: MAVEN BUILD'
+                echo '========================================='
+                sh '''
+                    echo "Running mvn clean compile..."
+                    mvn clean compile
+                '''
+                echo '✅ Build completed successfully'
             }
         }
         
         stage('Test') {
             steps {
-                echo '🧪 Running tests with Maven...'
-                sh 'mvn test'
+                echo '========================================='
+                echo '🧪 STAGE 3: MAVEN TEST'
+                echo '========================================='
+                sh '''
+                    echo "Running mvn test..."
+                    mvn test
+                '''
+                echo '✅ All tests passed'
             }
         }
     }
     
     post {
         success {
-            echo '✅ Build and tests completed successfully!'
+            echo '========================================='
+            echo '🎉 PIPELINE SUCCESSFUL!'
+            echo '========================================='
+            echo '✅ Checkout completed'
+            echo '✅ Build completed'
+            echo '✅ Tests passed'
         }
         failure {
-            echo '❌ Build or tests failed!'
+            echo '========================================='
+            echo '💥 PIPELINE FAILED!'
+            echo '========================================='
+            echo '❌ Please check the logs above'
         }
     }
 }
