@@ -1,6 +1,6 @@
 # Jenkins Webhook Test with Maven
 
-Simple Java project to test Jenkins CI/CD pipeline with GitHub webhook.
+Simple Java project to test Jenkins CI/CD pipeline with GitHub webhook .
 
 ## Stages
 1. **Checkout** - Pull code from GitHub
