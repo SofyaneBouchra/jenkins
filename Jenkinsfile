@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SLACK_CHANNEL = '#jenkins'
+        SLACK_CHANNEL = '#devops'
     }
 
     options {
@@ -20,7 +20,7 @@ pipeline {
                 checkout scm
                 
                 script {
-                    env.SHORT_COMMIT = env.GIT_COMMIT.take(7)
+                    env.SHORT_COMMIT = env.GIT_COMMIT ? env.GIT_COMMIT.take(7) : "N/A"
                 }
 
                 echo "✅ Code checked out successfully"
@@ -63,13 +63,7 @@ pipeline {
             slackSend(
                 channel: "${SLACK_CHANNEL}",
                 color: 'good',
-                message: """✅ *SUCCESS*
-Job: ${env.JOB_NAME}
-Build: #${env.BUILD_NUMBER}
-Branch: ${env.BRANCH_NAME}
-Commit: ${env.SHORT_COMMIT}
-Duration: ${currentBuild.durationString}
-🔗 ${env.BUILD_URL}"""
+                message: "✅ SUCCESS - ${env.JOB_NAME} #${env.BUILD_NUMBER} | Branch: ${env.BRANCH_NAME} | Commit: ${env.SHORT_COMMIT} | ${env.BUILD_URL}"
             )
         }
 
@@ -79,22 +73,17 @@ Duration: ${currentBuild.durationString}
             slackSend(
                 channel: "${SLACK_CHANNEL}",
                 color: 'danger',
-                message: """❌ *FAILED*
-Job: ${env.JOB_NAME}
-Build: #${env.BUILD_NUMBER}
-Branch: ${env.BRANCH_NAME}
-🔗 ${env.BUILD_URL}"""
+                message: "❌ FAILED - ${env.JOB_NAME} #${env.BUILD_NUMBER} | Branch: ${env.BRANCH_NAME} | ${env.BUILD_URL}"
             )
         }
 
         unstable {
+            echo '⚠️ PIPELINE UNSTABLE!'
+
             slackSend(
                 channel: "${SLACK_CHANNEL}",
                 color: 'warning',
-                message: """⚠️ *UNSTABLE*
-Job: ${env.JOB_NAME}
-Build: #${env.BUILD_NUMBER}
-🔗 ${env.BUILD_URL}"""
+                message: "⚠️ UNSTABLE - ${env.JOB_NAME} #${env.BUILD_NUMBER} | ${env.BUILD_URL}"
             )
         }
 
